@@ -28,6 +28,41 @@ and instructions are located in a
 This GitHub project is an adaptation of the
 [plutosdr-fw](https://github.com/analogdevicesinc/plutosdr-fw)
 GitHub project and includes only the rules that are needed to build the
-plutolink.frm image file that gets used during USB mass-storage flashing. If
-you need to do a DFU update (if you've bricked your device), use the official
-DFU image and then do a USB mass-storage upgrade to PlutoLink.
+*.frm image files that get used during USB mass-storage flashing. If you need
+to do a DFU update (if you've bricked your device), use the official DFU image
+and then do a USB mass-storage upgrade to PlutoLink.
+
+## Build
+
+Prep:
+
+```
+sudo apt-get install git build-essential fakeroot libncurses5-dev libssl-dev ccache
+sudo apt-get install dfu-util u-boot-tools device-tree-compiler mtools
+sudo apt-get install bc cpio zip unzip rsync file wget xvfb flex bison
+git submodule update --recursive
+```
+
+Actual build (assumes Xilinx is installed in `~/Xilinx/`)
+
+```
+export CROSS_COMPILE=arm-linux-gnueabihf-
+export PATH=$PATH:~/Xilinx/Vitis/2021.2/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin
+export VIVADO_SETTINGS=~/Xilinx/Vivado/2021.2/settings64.sh
+make
+```
+
+## Flash
+
+Use the mass-storage update procedure that can be found in the Pluto wiki:
+https://wiki.analog.com/university/tools/pluto/users/firmware
+
+* Mount the mass-storage device
+* Copy the "boot.frm" and "pluto.frm" files from the build folder to the root
+  of the mass-storage device
+* Eject the mass-storage device but **DO NOT UNPLUG** the Pluto module
+* Wait for update to finish and the Pluto module to update and reboot
+
+If the flashing fails for any reason, use the DFU update procedure and the
+*.dfu files in the official Pluto release. Once the recovery is complete,
+perform the mass-storage procedure again with the desired firmware.
