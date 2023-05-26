@@ -1,7 +1,3 @@
-# export CROSS_COMPILE=arm-linux-gnueabihf-
-# export PATH=$PATH:/home/trswany/Xilinx/Vitis/2021.2/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin
-# export VIVADO_SETTINGS=/home/trswany/Xilinx/Vivado/2021.2/settings64.sh
-
 ifndef CROSS_COMPILE
 $(error CROSS_COMPILE is undefined)
 endif
@@ -93,8 +89,8 @@ build/plutolink.itb: u-boot-xlnx/tools/mkimage build/zImage build/rootfs.cpio.gz
 	u-boot-xlnx/tools/mkimage -f scripts/plutolink.its $@
 
 build/system_top.xsa:  | build
-	bash -c "source $(VIVADO_SETTINGS) && make -C hdlplutolink && cp hdlplutolink/pluto.sdk/system_top.xsa $@"
-	unzip -l $@ | grep -q ps7_init || cp hdlplutolink/pluto.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
+	bash -c "source $(VIVADO_SETTINGS) && make -C hdlplutolink && cp hdlplutolink/plutolink.sdk/system_top.xsa $@"
+	unzip -l $@ | grep -q ps7_init || cp hdlplutolink/plutolink.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 
 build/sdk/fsbl/Release/fsbl.elf build/system_top.bit : build/system_top.xsa
 	rm -Rf build/sdk
