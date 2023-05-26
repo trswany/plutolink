@@ -93,8 +93,8 @@ build/plutolink.itb: u-boot-xlnx/tools/mkimage build/zImage build/rootfs.cpio.gz
 	u-boot-xlnx/tools/mkimage -f scripts/plutolink.its $@
 
 build/system_top.xsa:  | build
-	bash -c "source $(VIVADO_SETTINGS) && make -C hdl/projects/pluto && cp hdl/projects/pluto/pluto.sdk/system_top.xsa $@"
-	unzip -l $@ | grep -q ps7_init || cp hdl/projects/pluto/pluto.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
+	bash -c "source $(VIVADO_SETTINGS) && make -C hdlplutolink && cp hdlplutolink/pluto.sdk/system_top.xsa $@"
+	unzip -l $@ | grep -q ps7_init || cp hdlplutolink/pluto.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 
 build/sdk/fsbl/Release/fsbl.elf build/system_top.bit : build/system_top.xsa
 	rm -Rf build/sdk
@@ -118,6 +118,8 @@ clean:
 	make -C linux clean
 	make -C buildroot clean
 	make -C hdl clean
+	make -C hdlplutolink clean
+	make -C hdlplutolink clean-all
 	rm -f $(notdir $(wildcard build/*))
 	rm -rf build/*
 
