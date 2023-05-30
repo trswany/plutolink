@@ -11,6 +11,7 @@ PROJECT_NAME := plutolink
 
 HDL_PROJECT_PATH := ../hdl/projects/
 HDL_LIBRARY_PATH := ../hdl/library/
+RFKIT_LIBRARY_PATH := ../rfkit/src/
 
 M_DEPS += $(HDL_PROJECT_PATH)common/xilinx/adi_fir_filter_constr.xdc
 M_DEPS += $(HDL_PROJECT_PATH)common/xilinx/adi_fir_filter_bd.tcl
@@ -19,6 +20,8 @@ M_DEPS += $(HDL_LIBRARY_PATH)common/util_pulse_gen.v
 M_DEPS += $(HDL_LIBRARY_PATH)common/ad_iobuf.v
 M_DEPS += $(HDL_LIBRARY_PATH)common/ad_bus_mux.v
 M_DEPS += $(HDL_LIBRARY_PATH)axi_ad9361/axi_ad9361_delay.tcl
+
+M_DEPS += $(RFKIT_LIBRARY_PATH)demo_inverter/demo_inverter.sv
 
 LIB_DEPS += axi_ad9361
 LIB_DEPS += axi_dmac

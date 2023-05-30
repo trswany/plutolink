@@ -8,6 +8,8 @@
 ## Modified by Tom Swanson <trswany@gmail.com>
 ####################################################################################
 
+set rfkit_src_dir ../rfkit/src
+
 source ../hdl/scripts/adi_env.tcl
 source $ad_hdl_dir/projects/scripts/adi_project_xilinx.tcl
 source $ad_hdl_dir/projects/scripts/adi_board.tcl
@@ -17,7 +19,8 @@ adi_project_create plutolink 0 {} "xc7z010clg225-1"
 adi_project_files plutolink [list \
   "system_top.v" \
   "system_constr.xdc" \
-  "$ad_hdl_dir/library/common/ad_iobuf.v"]
+  "$ad_hdl_dir/library/common/ad_iobuf.v" \
+  "$rfkit_src_dir/demo_inverter/demo_inverter.sv"]
 
 set_property is_enabled false [get_files  *system_sys_ps7_0.xdc]
 adi_project_run plutolink

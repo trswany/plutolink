@@ -85,8 +85,9 @@ module system_top (
   input           spi_miso,
 
   output          pl_spi_clk_o,
-  output          pl_spi_mosi,
-  input           pl_spi_miso
+
+  input           inverter_in,
+  output          inverter_out
 );
 
   // internal signals
@@ -109,6 +110,11 @@ module system_top (
               gpio_status}));     //  7: 0
 
   assign gpio_i[16:14] = gpio_o[16:14];
+
+  demo_inverter i_demo_inverter (
+    .in(inverter_in),
+    .out(inverter_out)
+  );
 
   system_wrapper i_system_wrapper (
     .ddr_addr (ddr_addr),
@@ -156,9 +162,9 @@ module system_top (
     .spi_clk_o(pl_spi_clk_o),
     .spi_csn_i(1'b1),
     .spi_csn_o(),
-    .spi_sdi_i(pl_spi_miso),
+    .spi_sdi_i(1'b0),
     .spi_sdo_i(1'b0),
-    .spi_sdo_o(pl_spi_mosi),
+    .spi_sdo_o(),
 
     .tx_clk_out (tx_clk_out),
     .tx_data_out (tx_data_out),

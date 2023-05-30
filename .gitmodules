@@ -13,3 +13,6 @@
 	path = hdl
 	url = https://github.com/analogdevicesinc/hdl
 	branch = hdl_2018_r1
+[submodule "rfkit"]
+	path = rfkit
+	url = https://github.com/trswany/rfkit
