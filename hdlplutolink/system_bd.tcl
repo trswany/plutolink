@@ -39,6 +39,9 @@ create_bd_port -dir I spi_sdo_i
 create_bd_port -dir O spi_sdo_o
 create_bd_port -dir I spi_sdi_i
 
+create_bd_port -dir O sys_cpu_clk
+create_bd_port -dir O sys_cpu_reset
+
 # instance: sys_ps7
 
 ad_ip_instance processing_system7 sys_ps7

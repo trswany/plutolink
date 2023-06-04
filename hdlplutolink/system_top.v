@@ -84,10 +84,9 @@ module system_top (
   output          spi_mosi,
   input           spi_miso,
 
-  output          pl_spi_clk_o,
-
-  input           inverter_in,
-  output          inverter_out
+  input           pl_uart_rx,
+  output          pl_uart_cts,
+  output          pl_uart_tx
 );
 
   // internal signals
@@ -95,6 +94,12 @@ module system_top (
   wire    [16:0]  gpio_i;
   wire    [16:0]  gpio_o;
   wire    [16:0]  gpio_t;
+
+  wire    [7:0]   pl_uart_data;
+  wire            pl_uart_data_valid;
+  wire            uart_sample_trigger;
+  wire            sys_cpu_clk;
+  wire            sys_cpu_reset;
 
   // instantiations
 
@@ -111,9 +116,31 @@ module system_top (
 
   assign gpio_i[16:14] = gpio_o[16:14];
 
-  demo_inverter i_demo_inverter (
-    .in(inverter_in),
-    .out(inverter_out)
+  // Divide the 100MHz sys_cpu_clk by 54 to get 1.851MHz.
+  // That's roughly 16x of a 115200 baud rate (0.5% error).
+  pulse_generator #(.INTERVAL(54)) uart_pulse_generator(
+    .out(uart_sample_trigger),
+    .rst(sys_cpu_reset),
+    .clk(sys_cpu_clk)
+  );
+
+  uart_rx uart_rx (
+    .clk(sys_cpu_clk),
+    .sample_trigger(uart_sample_trigger),
+    .rst(sys_cpu_reset),
+    .raw_data(pl_uart_rx),
+    .data(pl_uart_data),
+    .data_valid(pl_uart_data_valid)
+  );
+
+  uart_tx uart_tx (
+    .clk(sys_cpu_clk),
+    .sample_trigger(uart_sample_trigger),
+    .rst(sys_cpu_reset),
+    .serial_data(pl_uart_tx),
+    .ready(pl_uart_cts),
+    .data(pl_uart_data),
+    .start(pl_uart_data_valid)
   );
 
   system_wrapper i_system_wrapper (
@@ -148,6 +175,9 @@ module system_top (
     .rx_data_in (rx_data_in),
     .rx_frame_in (rx_frame_in),
 
+    .sys_cpu_clk (sys_cpu_clk),
+    .sys_cpu_reset (sys_cpu_reset),
+
     .spi0_clk_i (1'b0),
     .spi0_clk_o (spi_clk),
     .spi0_csn_0_o (spi_csn),
@@ -159,7 +189,7 @@ module system_top (
     .spi0_sdo_o (spi_mosi),
 
     .spi_clk_i(1'b0),
-    .spi_clk_o(pl_spi_clk_o),
+    .spi_clk_o(),
     .spi_csn_i(1'b1),
     .spi_csn_o(),
     .spi_sdi_i(1'b0),

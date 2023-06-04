@@ -20,7 +20,11 @@ adi_project_files plutolink [list \
   "system_top.v" \
   "system_constr.xdc" \
   "$ad_hdl_dir/library/common/ad_iobuf.v" \
-  "$rfkit_src_dir/demo_inverter/demo_inverter.sv"]
+  "$rfkit_src_dir/uart/pulse_generator.sv" \
+  "$rfkit_src_dir/uart/start_bit_detector.sv" \
+  "$rfkit_src_dir/uart/bit_sampler.sv" \
+  "$rfkit_src_dir/uart/uart_rx.sv" \
+  "$rfkit_src_dir/uart/uart_tx.sv"]
 
 set_property is_enabled false [get_files  *system_sys_ps7_0.xdc]
 adi_project_run plutolink

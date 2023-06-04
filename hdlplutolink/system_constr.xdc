@@ -68,9 +68,9 @@ set_property  -dict {PACKAGE_PIN  E11  IOSTANDARD LVCMOS18} [get_ports spi_clk]
 set_property  -dict {PACKAGE_PIN  E13  IOSTANDARD LVCMOS18} [get_ports spi_mosi]
 set_property  -dict {PACKAGE_PIN  F12  IOSTANDARD LVCMOS18} [get_ports spi_miso]
 
-set_property  -dict {PACKAGE_PIN  R10  IOSTANDARD LVCMOS18} [get_ports pl_spi_clk_o]
-set_property  -dict {PACKAGE_PIN  M12  IOSTANDARD LVCMOS18} [get_ports inverter_out]
-set_property  -dict {PACKAGE_PIN  K13  IOSTANDARD LVCMOS18 PULLTYPE PULLUP} [get_ports inverter_in]
+set_property  -dict {PACKAGE_PIN  R10  IOSTANDARD LVCMOS18} [get_ports pl_uart_cts]
+set_property  -dict {PACKAGE_PIN  M12  IOSTANDARD LVCMOS18} [get_ports pl_uart_tx]
+set_property  -dict {PACKAGE_PIN  K13  IOSTANDARD LVCMOS18 PULLTYPE PULLUP} [get_ports pl_uart_rx]
 
 set_property  -dict {PACKAGE_PIN  P8   IOSTANDARD LVCMOS18} [get_ports clk_out]
 
