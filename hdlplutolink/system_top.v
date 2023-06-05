@@ -118,16 +118,16 @@ module system_top (
 
   // Divide the 100MHz sys_cpu_clk by 54 to get 1.851MHz.
   // That's roughly 16x of a 115200 baud rate (0.5% error).
-  pulse_generator #(.INTERVAL(54)) uart_pulse_generator(
-    .out(uart_sample_trigger),
+  pulse_generator #(.Period(54)) uart_pulse_generator(
+    .clk(sys_cpu_clk),
     .rst(sys_cpu_reset),
-    .clk(sys_cpu_clk)
+    .pulse(uart_sample_trigger)
   );
 
   uart_rx uart_rx (
     .clk(sys_cpu_clk),
-    .sample_trigger(uart_sample_trigger),
     .rst(sys_cpu_reset),
+    .sample_trigger(uart_sample_trigger),
     .raw_data(pl_uart_rx),
     .data(pl_uart_data),
     .data_valid(pl_uart_data_valid)
@@ -135,12 +135,12 @@ module system_top (
 
   uart_tx uart_tx (
     .clk(sys_cpu_clk),
-    .sample_trigger(uart_sample_trigger),
     .rst(sys_cpu_reset),
-    .serial_data(pl_uart_tx),
-    .ready(pl_uart_cts),
+    .sample_trigger(uart_sample_trigger),
     .data(pl_uart_data),
-    .start(pl_uart_data_valid)
+    .start(pl_uart_data_valid),
+    .serial_data(pl_uart_tx),
+    .ready(pl_uart_cts)
   );
 
   system_wrapper i_system_wrapper (
