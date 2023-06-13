@@ -95,8 +95,11 @@ module system_top (
   wire    [16:0]  gpio_o;
   wire    [16:0]  gpio_t;
 
-  wire    [7:0]   pl_uart_data;
-  wire            pl_uart_data_valid;
+  wire    [7:0]   uart_tx_word, uart_rx_word;
+  wire            uart_buffer_empty;
+  wire            uart_tx_start;
+  wire            uart_tx_ready;
+  wire            uart_buffer_put;
   wire            uart_sample_trigger;
   wire            sys_cpu_clk;
   wire            sys_cpu_reset;
@@ -116,6 +119,21 @@ module system_top (
 
   assign gpio_i[16:14] = gpio_o[16:14];
 
+  ring_buffer #(
+    .WordLengthBits(8),
+    .NumWords(128)
+  ) uart_ring_buffer(
+    .clk(sys_cpu_clk),
+    .rst(sys_cpu_reset),
+    .put(uart_buffer_put),
+    .get(uart_tx_ready),
+    .data_in(uart_rx_word),
+    .data_out(uart_tx_word),
+    .data_out_valid(uart_tx_start),
+    .buffer_empty(pl_uart_cts),
+    .buffer_100p_full()
+  );
+
   // Divide the 100MHz sys_cpu_clk by 54 to get 1.851MHz.
   // That's roughly 16x of a 115200 baud rate (0.5% error).
   pulse_generator #(.Period(54)) uart_pulse_generator(
@@ -129,18 +147,18 @@ module system_top (
     .rst(sys_cpu_reset),
     .sample_trigger(uart_sample_trigger),
     .raw_data(pl_uart_rx),
-    .data(pl_uart_data),
-    .data_valid(pl_uart_data_valid)
+    .data(uart_rx_word),
+    .data_valid(uart_buffer_put)
   );
 
   uart_tx uart_tx (
     .clk(sys_cpu_clk),
     .rst(sys_cpu_reset),
     .sample_trigger(uart_sample_trigger),
-    .data(pl_uart_data),
-    .start(pl_uart_data_valid),
+    .data(uart_tx_word),
+    .start(uart_tx_start),
     .serial_data(pl_uart_tx),
-    .ready(pl_uart_cts)
+    .ready(uart_tx_ready)
   );
 
   system_wrapper i_system_wrapper (

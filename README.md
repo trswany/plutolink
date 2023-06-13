@@ -66,3 +66,20 @@ https://wiki.analog.com/university/tools/pluto/users/firmware
 If the flashing fails for any reason, use the DFU update procedure and the
 *.dfu files in the official Pluto release. Once the recovery is complete,
 perform the mass-storage procedure again with the desired firmware.
+
+## UART Pinout
+
+Three of the Zynq's PL IO pins have been repurposed for use in the UART that
+interfaces with the radio link. These pins are conveniently exposed on a header
+on the PLUTO PCBA.
+
+Warning: These pins are all 1.8V logic.
+
+- Zynq pin M12, UART TX, output, Pluto header pin L12N
+- Zynq pin K13, UART RX, input, Pluto header pin L10P
+- Zynq pin R10, UART CTS, output, Pluto header pin L24N
+
+The FTDI TTL-232RG-VREG1V8-WE has 1.8V logic and is compatible with this UART.
+The black wire is ground (connect to Pluto ground), the yellow wire is RXD
+(connect to Pluto TX L12N), the orange wire is TXD (connect to Pluto RX L10P),
+and the green wire is CTS (connect to Pluto CTS L24N).
