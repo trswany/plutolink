@@ -22,6 +22,7 @@ adi_project_files plutolink [list \
   "$ad_hdl_dir/library/common/ad_iobuf.v" \
   "$rfkit_src_dir/pulse_generator/pulse_generator.sv" \
   "$rfkit_src_dir/ring_buffer/ring_buffer.sv" \
+  "$rfkit_src_dir/ad936x_data_interface/ad936x_data_interface.sv" \
   "$rfkit_src_dir/bram/bram_dual_port.sv" \
   "$rfkit_src_dir/uart/start_bit_detector.sv" \
   "$rfkit_src_dir/uart/bit_sampler.sv" \

@@ -161,6 +161,25 @@ module system_top (
     .ready(uart_tx_ready)
   );
 
+  ad936x_data_interface (
+    .clk(sys_cpu_clk),
+    .rst(sys_cpu_reset),
+    .bbp_rx_data_i(),
+    .bbp_rx_data_q(),
+    .bbp_rx_data_ready(1'b1),
+    .bbp_rx_data_valid(),
+    .bbp_tx_data_i(12'b0),
+    .bbp_tx_data_q(12'b0),
+    .bbp_tx_data_ready(),
+    .bbp_tx_data_valid(1'b1),
+    .ad936x_rx_data(rx_data_in),
+    .ad936x_rx_frame(rx_frame_in),
+    .ad936x_data_clk(rx_clk_in),
+    .ad936x_data_clk_fb(tx_clk_out),
+    .ad936x_tx_data(tx_data_out),
+    .ad936x_tx_frame(tx_frame_out)
+  );
+
   system_wrapper i_system_wrapper (
     .ddr_addr (ddr_addr),
     .ddr_ba (ddr_ba),
@@ -189,9 +208,9 @@ module system_top (
     .gpio_t (gpio_t),
     .iic_main_scl_io (iic_scl),
     .iic_main_sda_io (iic_sda),
-    .rx_clk_in (rx_clk_in),
-    .rx_data_in (rx_data_in),
-    .rx_frame_in (rx_frame_in),
+    .rx_clk_in (1'b0),
+    .rx_data_in (12'b0),
+    .rx_frame_in (1'b0),
 
     .sys_cpu_clk (sys_cpu_clk),
     .sys_cpu_reset (sys_cpu_reset),
@@ -214,9 +233,9 @@ module system_top (
     .spi_sdo_i(1'b0),
     .spi_sdo_o(),
 
-    .tx_clk_out (tx_clk_out),
-    .tx_data_out (tx_data_out),
-    .tx_frame_out (tx_frame_out),
+    .tx_clk_out (),
+    .tx_data_out (),
+    .tx_frame_out (),
     .txnrx (txnrx),
     .up_enable (gpio_o[15]),
     .up_txnrx (gpio_o[16]));
