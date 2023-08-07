@@ -16,7 +16,7 @@ NCORES = $(shell grep -c ^processor /proc/cpuinfo)
 VSUBDIRS = hdl buildroot linux u-boot-xlnx
 VERSION=$(shell git describe --abbrev=4 --dirty --always --tags)
 UBOOT_VERSION=$(shell echo -n "PlutoLink " && cd u-boot-xlnx && git describe --abbrev=0 --dirty --always --tags)
-TARGET_DTS_FILES:= zynq-pluto-sdr.dtb zynq-pluto-sdr-revb.dtb zynq-pluto-sdr-revc.dtb
+TARGET_DTS_FILES:= zynq-pluto-sdr.dtb zynq-pluto-sdr-revb.dtb zynq-plutolink.dtb
 COMPLETE_NAME:=PlutoLink
 
 TARGETS = build/plutolink.frm build/boot.frm
@@ -52,8 +52,11 @@ build/uboot-env.bin: build/uboot-env.txt
 
 ### Linux ###
 
-linux/arch/arm/boot/zImage:
-	make -C linux ARCH=arm zynq_pluto_defconfig
+linux/arch/arm/configs/zynq_plutolink_defconfig:
+	cp configs/zynq_plutolink_defconfig linux/arch/arm/configs/zynq_plutolink_defconfig
+
+linux/arch/arm/boot/zImage: linux/arch/arm/configs/zynq_plutolink_defconfig
+	make -C linux ARCH=arm zynq_plutolink_defconfig
 	make -C linux -j $(NCORES) ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) zImage UIMAGE_LOADADDR=0x8000
 
 .PHONY: linux/arch/arm/boot/zImage
@@ -64,7 +67,10 @@ build/zImage: linux/arch/arm/boot/zImage  | build
 
 ### Device Tree ###
 
-linux/arch/arm/boot/dts/%.dtb: linux/arch/arm/boot/dts/%.dts  linux/arch/arm/boot/dts/zynq-pluto-sdr.dtsi
+linux/arch/arm/boot/dts/zynq-plutolink.dts:
+	cp configs/zynq-plutolink.dts linux/arch/arm/boot/dts/zynq-plutolink.dts
+
+linux/arch/arm/boot/dts/%.dtb: linux/arch/arm/boot/dts/%.dts  linux/arch/arm/boot/dts/zynq-plutolink.dts
 	DTC_FLAGS=-@ make -C linux -j $(NCORES) ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) $(notdir $@)
 
 build/%.dtb: linux/arch/arm/boot/dts/%.dtb | build
@@ -117,5 +123,7 @@ clean:
 	make -C hdlplutolink clean
 	make -C hdlplutolink clean-all
 	rm -f $(notdir $(wildcard build/*))
+	rm linux/arch/arm/configs/zynq_plutolink_defconfig
+	rm linux/arch/arm/boot/dts/zynq-plutolink.dts
 	rm -rf build/*
 

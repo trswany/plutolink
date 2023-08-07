@@ -180,6 +180,10 @@ module system_top (
     .ad936x_tx_frame(tx_frame_out)
   );
 
+  // TODO: replace these with actual controls.
+  assign enable = gpio_o[15];
+  assign txnrx = gpio_o[16];
+
   system_wrapper i_system_wrapper (
     .ddr_addr (ddr_addr),
     .ddr_ba (ddr_ba),
@@ -196,7 +200,6 @@ module system_top (
     .ddr_ras_n (ddr_ras_n),
     .ddr_reset_n (ddr_reset_n),
     .ddr_we_n (ddr_we_n),
-    .enable (enable),
     .fixed_io_ddr_vrn (fixed_io_ddr_vrn),
     .fixed_io_ddr_vrp (fixed_io_ddr_vrp),
     .fixed_io_mio (fixed_io_mio),
@@ -208,9 +211,6 @@ module system_top (
     .gpio_t (gpio_t),
     .iic_main_scl_io (iic_scl),
     .iic_main_sda_io (iic_sda),
-    .rx_clk_in (1'b0),
-    .rx_data_in (12'b0),
-    .rx_frame_in (1'b0),
 
     .sys_cpu_clk (sys_cpu_clk),
     .sys_cpu_reset (sys_cpu_reset),
@@ -231,13 +231,6 @@ module system_top (
     .spi_csn_o(),
     .spi_sdi_i(1'b0),
     .spi_sdo_i(1'b0),
-    .spi_sdo_o(),
-
-    .tx_clk_out (),
-    .tx_data_out (),
-    .tx_frame_out (),
-    .txnrx (txnrx),
-    .up_enable (gpio_o[15]),
-    .up_txnrx (gpio_o[16]));
+    .spi_sdo_o());
 
 endmodule
