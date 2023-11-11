@@ -96,6 +96,10 @@ module system_top (
   wire    [16:0]  gpio_t;
 
   wire    [7:0]   uart_tx_word, uart_rx_word;
+  wire    [11:0]  bbp_rx_data_i, bbp_rx_data_q;
+  wire            bbp_rx_data_valid;
+  wire    [11:0]  fll_data_out;
+  wire            fll_data_out_valid;
   wire            uart_buffer_empty;
   wire            uart_tx_start;
   wire            uart_tx_ready;
@@ -125,9 +129,9 @@ module system_top (
   ) uart_ring_buffer(
     .clk(sys_cpu_clk),
     .rst(sys_cpu_reset),
-    .put(uart_buffer_put),
+    .put(fll_data_out_valid),
     .get(uart_tx_ready),
-    .data_in(uart_rx_word),
+    .data_in(fll_data_out[11 -: 8]),
     .data_out(uart_tx_word),
     .data_out_valid(uart_tx_start),
     .buffer_empty(pl_uart_cts),
@@ -161,13 +165,24 @@ module system_top (
     .ready(uart_tx_ready)
   );
 
+  frequency_locked_loop fll (
+    .clk(sys_cpu_clk),
+    .rst(sys_cpu_reset),
+    .in_i(bbp_rx_data_i),
+    .in_q(bbp_rx_data_q),
+    .in_valid(bbp_rx_data_valid),
+    .out_ready(1'b1),
+    .out(fll_data_out),
+    .out_valid(fll_data_out_valid)
+  );
+
   ad936x_data_interface (
     .clk(sys_cpu_clk),
     .rst(sys_cpu_reset),
-    .bbp_rx_data_i(),
-    .bbp_rx_data_q(),
+    .bbp_rx_data_i(bbp_rx_data_i),
+    .bbp_rx_data_q(bbp_rx_data_q),
     .bbp_rx_data_ready(1'b1),
-    .bbp_rx_data_valid(),
+    .bbp_rx_data_valid(bbp_rx_data_valid),
     .bbp_tx_data_i(12'b0),
     .bbp_tx_data_q(12'b0),
     .bbp_tx_data_ready(),
