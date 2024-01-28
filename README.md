@@ -63,6 +63,13 @@ https://wiki.analog.com/university/tools/pluto/users/firmware
 * Eject the mass-storage device but **DO NOT UNPLUG** the Pluto module
 * Wait for update to finish and the Pluto module to update and reboot
 
+```
+sudo mount /dev/sdX1 /mnt/pluto
+sudo cp plutolink.frm /mnt/trswany/pluto.frm
+sudo cp boot.frm /mnt/pluto/
+sudo eject /dev/sdX
+```
+
 If the flashing fails for any reason, use the DFU update procedure and the
 *.dfu files in the official Pluto release. Once the recovery is complete,
 perform the mass-storage procedure again with the desired firmware.

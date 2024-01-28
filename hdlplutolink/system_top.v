@@ -138,9 +138,9 @@ module system_top (
     .buffer_100p_full()
   );
 
-  // Divide the 100MHz sys_cpu_clk by 54 to get 1.851MHz.
-  // That's roughly 16x of a 115200 baud rate (0.5% error).
-  pulse_generator #(.Period(54)) uart_pulse_generator(
+  // Divide the 100MHz sys_cpu_clk by 11 to get 9.09MHz.
+  // That's roughly 16x of 576000 baud (1.36% error)
+  pulse_generator #(.Period(11)) uart_pulse_generator(
     .clk(sys_cpu_clk),
     .rst(sys_cpu_reset),
     .pulse(uart_sample_trigger)
