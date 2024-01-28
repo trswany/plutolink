@@ -12,3 +12,6 @@ build/
 *.ip_user_files
 *.cache
 *.sdk
+
+# Ohter ignores
+*.pyc
