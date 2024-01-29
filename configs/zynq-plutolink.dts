@@ -166,6 +166,16 @@
 		adi,tx-data-delay = <9>;
 		adi,swap-ports-enable;
 
+		// PlutoLink needs single-data-rate mode.
+		adi,single-data-rate-enable;
+
+		// PlutoLink must not have these set.
+		//adi,half-duplex-mode-enable
+		//adi,single-port-mode-enable
+		//adi,fdd-rx-rate-2tx-enable
+		//adi,2t2r-timing-enable
+		//adi,lvds-mode-enable
+
 		/* Mode Setup */
 
 		//adi,split-gain-table-mode-enable;
@@ -173,7 +183,10 @@
 		/* ENSM Mode */
 		adi,frequency-division-duplex-mode-enable;
 		//adi,ensm-enable-pin-pulse-mode-enable;
-		//adi,ensm-enable-txnrx-control-enable;
+
+		// Added for PlutoLink.
+		adi,ensm-enable-txnrx-control-enable;
+		adi,frequency-division-duplex-independent-mode-enable;
 
 
 		/* adi,rx-rf-port-input-select:
@@ -423,7 +436,8 @@
 
 &adc0_ad9364 {
 	/* This property is controlled by u-boot environment. */
-	adi,2rx-2tx-mode-enable;
+	// PlutoLink requires this to be unset.
+	//adi,2rx-2tx-mode-enable;
 };
 
 / {
