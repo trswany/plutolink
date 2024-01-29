@@ -11,8 +11,8 @@ import sys
 import serial
 
 def main():
-  ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=None)
-  print('test')
+  # Use 576000 baud to match the PlutoLink UART.
+  ser = serial.Serial('/dev/ttyUSB0', 576000, timeout=None)
   sum = 0
   num_samples = 0
   try:
