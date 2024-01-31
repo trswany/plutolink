@@ -29,7 +29,13 @@ adi_project_files plutolink [list \
   "$rfkit_src_dir/uart/start_bit_detector.sv" \
   "$rfkit_src_dir/uart/bit_sampler.sv" \
   "$rfkit_src_dir/uart/uart_rx.sv" \
-  "$rfkit_src_dir/uart/uart_tx.sv"]
+  "$rfkit_src_dir/uart/uart_tx.sv" \
+  "$rfkit_src_dir/cic/integrator.sv" \
+  "$rfkit_src_dir/cic/comb.sv" \
+  "$rfkit_src_dir/cic/decimator.sv" \
+  "$rfkit_src_dir/cic/compensator.sv" \
+  "$rfkit_src_dir/cic/cic_decimator.sv"
+]
 
 set_property is_enabled false [get_files  *system_sys_ps7_0.xdc]
 adi_project_run plutolink

@@ -100,6 +100,8 @@ module system_top (
   wire            bbp_rx_data_valid;
   wire    [11:0]  fll_data_out;
   wire            fll_data_out_valid;
+  wire    [35:0]  cic_data_out;
+  wire            cic_data_out_valid;
   wire            uart_buffer_empty;
   wire            uart_tx_start;
   wire            uart_tx_ready;
@@ -122,6 +124,7 @@ module system_top (
               gpio_status}));     //  7: 0
 
   assign gpio_i[16:14] = gpio_o[16:14];
+  assign pl_uart_cts = cic_data_out_valid;
 
   ring_buffer #(
     .WordLengthBits(8),
@@ -129,12 +132,12 @@ module system_top (
   ) uart_ring_buffer(
     .clk(sys_cpu_clk),
     .rst(sys_cpu_reset),
-    .put(fll_data_out_valid),
+    .put(cic_data_out_valid),
     .get(uart_tx_ready),
-    .data_in(fll_data_out[11 -: 8]),
+    .data_in(cic_data_out[35 -: 8]),
     .data_out(uart_tx_word),
     .data_out_valid(uart_tx_start),
-    .buffer_empty(pl_uart_cts),
+    .buffer_empty(),
     .buffer_100p_full()
   );
 
@@ -176,6 +179,23 @@ module system_top (
     .out_valid(fll_data_out_valid)
   );
 
+  cic_decimator #(
+    .InputLengthBits(12),
+    .DecimationFactor(50),
+    .DelayLength(1),
+    .FilterOrder(3),
+    .InternalLengthBits(29),
+    .OutputLengthBits(36)
+  ) cic(
+    .clk(sys_cpu_clk),
+    .rst(sys_cpu_reset),
+    .in(bbp_rx_data_i),
+    .in_valid(bbp_rx_data_valid),
+    .out(cic_data_out),
+    .out_ready(1'b1),
+    .out_valid(cic_data_out_valid)
+  );
+
   ad936x_data_interface (
     .clk(sys_cpu_clk),
     .rst(sys_cpu_reset),
@@ -196,8 +216,10 @@ module system_top (
   );
 
   // TODO: replace these with actual controls.
-  assign enable = gpio_o[15];
-  assign txnrx = gpio_o[16];
+  // assign enable = gpio_o[15];
+  // assign txnrx = gpio_o[16];
+  assign enable = 1'b1;
+  assign txnrx = 1'b0;
 
   system_wrapper i_system_wrapper (
     .ddr_addr (ddr_addr),
