@@ -14,7 +14,7 @@ from scipy.fft import fft, fftfreq
 import serial
 
 num_samples_per_plot = 10_000
-sample_rate = 40_000
+sample_rate = 31_250
 
 def fetch_data(sample_queue, log_message_queue, ser):
   """Fetch signed integers from serial port and send them to the queue."""

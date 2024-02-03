@@ -95,13 +95,14 @@ module system_top (
   wire    [16:0]  gpio_o;
   wire    [16:0]  gpio_t;
 
+  wire signed [11:0]  bbp_rx_data_i, bbp_rx_data_q;
+  wire signed [34:0]  cic_data_out;
+  wire                cic_data_out_valid;
+  wire signed [11:0]  fll_data_out;
+  wire                fll_data_out_valid;
+
   wire    [7:0]   uart_tx_word, uart_rx_word;
-  wire    [11:0]  bbp_rx_data_i, bbp_rx_data_q;
   wire            bbp_rx_data_valid;
-  wire    [11:0]  fll_data_out;
-  wire            fll_data_out_valid;
-  wire    [35:0]  cic_data_out;
-  wire            cic_data_out_valid;
   wire            uart_buffer_empty;
   wire            uart_tx_start;
   wire            uart_tx_ready;
@@ -132,9 +133,9 @@ module system_top (
   ) uart_ring_buffer(
     .clk(sys_cpu_clk),
     .rst(sys_cpu_reset),
-    .put(cic_data_out_valid),
+    .put(fll_data_out_valid),
     .get(uart_tx_ready),
-    .data_in(cic_data_out[35 -: 8]),
+    .data_in(fll_data_out[11 -: 8]),
     .data_out(uart_tx_word),
     .data_out_valid(uart_tx_start),
     .buffer_empty(),
@@ -181,11 +182,11 @@ module system_top (
 
   cic_decimator #(
     .InputLengthBits(12),
-    .DecimationFactor(50),
+    .DecimationFactor(64),
     .DelayLength(1),
     .FilterOrder(3),
-    .InternalLengthBits(29),
-    .OutputLengthBits(36)
+    .InternalLengthBits(30),
+    .OutputLengthBits(35)
   ) cic(
     .clk(sys_cpu_clk),
     .rst(sys_cpu_reset),
@@ -203,8 +204,8 @@ module system_top (
     .bbp_rx_data_q(bbp_rx_data_q),
     .bbp_rx_data_ready(1'b1),
     .bbp_rx_data_valid(bbp_rx_data_valid),
-    .bbp_tx_data_i(12'b0),
-    .bbp_tx_data_q(12'b0),
+    .bbp_tx_data_i(12'b0011_0100_0000),
+    .bbp_tx_data_q(12'b0011_1100_0000),
     .bbp_tx_data_ready(),
     .bbp_tx_data_valid(1'b1),
     .ad936x_rx_data(rx_data_in),

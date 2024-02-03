@@ -1,6 +1,10 @@
 """Configure the PlutoLink AD9363 SDR IC using libiio.
 
+The ad9363 class of pyadi-iio is here:
+https://github.com/analogdevicesinc/pyadi-iio/blob/dbf2a606bf1dad4a803342c5641cc7ae61ff3282/adi/ad936x.py#L246
+
 To install dependencies:
+- Make sure to install 53-adi-plutosdr-usb.rules
 - sudo apt-get install libiio libiio-dev libiio-utils
 - pip3 install pyadi-iio
 """
@@ -11,15 +15,20 @@ import time
 from adi import ad9363
 
 class plutolink_ad9363(ad9363):
-    # The data interface has been removed from the device tree, so don't try to
-    # connect to it. We're using libiio only for configuration via SPI.
-    _rx_data_device_name = ""
-    _tx_data_device_name = ""
+  # The data interface has been removed from the device tree, so don't try to
+  # connect to it. We're using libiio only for configuration via SPI.
+  _rx_data_device_name = ""
+  _tx_data_device_name = ""
 
-    @property
-    def rssi(self):
-        """rssi: receiver RSSI measurement."""
-        return self._get_iio_attr("voltage0", "rssi", False)
+  @property
+  def rssi(self):
+      """rssi: receiver RSSI measurement."""
+      return self._get_iio_attr("voltage0", "rssi", False)
+
+  def print_attrs(self):
+    for key, _ in self._ctrl.debug_attrs.items():
+      print(key)
+
 
 def main():
   sdr = plutolink_ad9363(uri="ip:192.168.2.1")
@@ -40,6 +49,14 @@ def main():
   # Set the filters and sample rates using the output of the AD9363 Matlab
   # Filter Design Wizard.
   sdr.filter = "plutolink_ad9363_filter_settings.ftr"
+
+  # Set a very low manual gain
+  #sdr.gain_control_mode_chan0 = "manual"
+  #sdr.rx_hardwaregain_chan0 = 3
+
+  # Set loopback to digital mode. For some reason this crashes the connection.
+  # sdr.loopback = 1
+  # sdr.print_attrs()
 
   print('-----')
   print('Common settings:')
